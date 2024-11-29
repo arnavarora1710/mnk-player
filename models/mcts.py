@@ -3,6 +3,10 @@ import random
 
 class Node:
     def __init__(self, state, parent=None):
+        # state here is any game
+        # but for our purposes it is an mnk game (consisting of m * n board)
+        # with win condition being any row/column/diagonal having k consecutive blocks
+        # of the same player
         self.state = state
         self.parent = parent
         self.children = []

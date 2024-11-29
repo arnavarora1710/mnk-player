@@ -21,7 +21,7 @@ class MNKGame:
         self.board[row][col] = self.current_player
         self.current_player = 2 if self.current_player == 1 else 1  # Switch player
 
-    def is_game_done(self):
+    def is_terminal(self):
         # Check for a win condition
         for i in range(self.m):
             for j in range(self.n):
