@@ -3,3 +3,4 @@ data/
 src/__pycache__/
 src/models/__pycache__/
 venv/
+.history

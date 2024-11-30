@@ -50,3 +50,36 @@ class MNKGame:
             else:
                 count = 0
         return False
+    
+    def reset_game(self):
+        self.board = [[None for _ in range(self.n)] for _ in range(self.m)]
+        self.current_player = 1
+
+    def save_state(self, filename):
+        import json
+        state = {
+            "board": self.board,
+            "current_player": self.current_player,
+            "m": self.m,
+            "n": self.n,
+            "k": self.k
+        }
+        with open(filename, "w") as f:
+            json.dump(state, f)
+        print(f"Game state saved to {filename}.")
+
+    def load_state(self, filename):
+        import json
+        with open(filename, "r") as f:
+            state = json.load(f)
+        self.board = state["board"]
+        self.current_player = state["current_player"]
+        self.m = state["m"]
+        self.n = state["n"]
+        self.k = state["k"]
+        print(f"Game state loaded from {filename}.")
+
+    def display_board(self):
+        for row in self.board:
+            print(" ".join([str(cell) if cell is not None else "." for cell in row]))
+        print()
