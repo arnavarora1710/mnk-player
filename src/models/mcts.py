@@ -16,12 +16,15 @@ class Node:
     def is_fully_expanded(self):
         return len(self.children) == len(self.state.get_legal_moves())
 
+    # fix zero division problem
     def best_child(self, exploration_weight=1.41):
         choices_weights = [
-            (child.wins / child.visits) + exploration_weight * np.sqrt(np.log(self.visits) / child.visits)
+            (child.wins / child.visits if child.visits > 0 else float('inf')) +
+            exploration_weight * np.sqrt(np.log(self.visits) / (child.visits + 1e-10))  # 작은 값 추가로 0 나누기 방지
             for child in self.children
         ]
         return self.children[np.argmax(choices_weights)]
+
 
 class MCTS:
     def __init__(self, game):

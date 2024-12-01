@@ -1,49 +1,69 @@
+import numpy as np
+import json
+
 class MNKGame:
     def __init__(self, m, n, k):
         self.m = m  # Number of rows
         self.n = n  # Number of columns
         self.k = k  # Number of consecutive marks needed to win
-        self.board = [[[None for _ in range(n)] for _ in range(m)] for _ in range(k)]
-        self.current_player = 1  # Player 1 starts
+        self.board = np.full((m, n), ' ')  # Empty board
+        self.current_player = 'X'  # Player X starts
+        self.winner = None  # To store the winner
+        self.last_move = None  # To store the last move
+
+    def display_board(self):
+        print("\n=== Current Board ===")
+        print("   " + "   ".join(f"{i:2}" for i in range(self.n)))  # Column indices
+        print("  +" + "---+" * self.n)
+        for i, row in enumerate(self.board):
+            row_display = " | ".join(row)
+            print(f"{i:2} | {row_display} |")  # Row index and row content
+            print("  +" + "---+" * self.n)
+        print(f"Next Player: {self.current_player}\n")
 
     def get_legal_moves(self):
-        legal_moves = []
-        for i in range(self.m):
-            for j in range(self.n):
-                if self.board[i][j] is None:  # Check if the cell is empty
-                    legal_moves.append((i, j))
-        return legal_moves
+        return [(i, j) for i in range(self.m) for j in range(self.n) if self.board[i, j] == ' ']
 
     def make_move(self, move):
         row, col = move
-        if self.board[row][col] is not None:
+        if self.board[row, col] != ' ':
             raise ValueError("Invalid move: Cell is already occupied.")
-        self.board[row][col] = self.current_player
-        self.current_player = 2 if self.current_player == 1 else 1  # Switch player
+        new_game = self.copy()
+        new_game.board[row, col] = self.current_player
+        new_game.last_move = move
+        new_game.current_player = 'O' if self.current_player == 'X' else 'X'
+        new_game.check_winner(row, col)
+        return new_game
 
     def is_terminal(self):
-        # Check for a win condition
-        for i in range(self.m):
-            for j in range(self.n):
-                if self.board[i][j] is not None:
-                    if self.check_win(i, j):
-                        return True
-        return False
+        """Check if the game is over."""
+        if self.winner is not None:
+            return True  # Someone has won
+        return all(cell != ' ' for row in self.board for cell in row)  # Draw
 
-    def check_win(self, row, col):
-        player = self.board[row][col]
-        # Check all directions for a win
-        return (self.check_direction(row, col, 1, 0, player) or  # Horizontal
-                self.check_direction(row, col, 0, 1, player) or  # Vertical
-                self.check_direction(row, col, 1, 1, player) or  # Diagonal \
-                self.check_direction(row, col, 1, -1, player))   # Diagonal /
+    def get_reward(self):
+        """Return the reward for the current state."""
+        if self.winner == 'X':
+            return 1
+        elif self.winner == 'O':
+            return -1
+        return 0  # Draw or ongoing game
 
-    def check_direction(self, row, col, delta_row, delta_col, player):
+    def check_winner(self, row, col):
+        """Check if the last move resulted in a win."""
+        player = self.board[row, col]
+        directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
+        for dx, dy in directions:
+            if self.check_direction(row, col, dx, dy, player):
+                self.winner = player
+                return
+        self.winner = None
+
+    def check_direction(self, row, col, dx, dy, player):
         count = 0
-        for d in range(-self.k + 1, self.k):  # Check in both directions
-            r = row + d * delta_row
-            c = col + d * delta_col
-            if 0 <= r < self.m and 0 <= c < self.n and self.board[r][c] == player:
+        for step in range(-self.k + 1, self.k):
+            r, c = row + step * dx, col + step * dy
+            if 0 <= r < self.m and 0 <= c < self.n and self.board[r, c] == player:
                 count += 1
                 if count == self.k:
                     return True
@@ -51,35 +71,45 @@ class MNKGame:
                 count = 0
         return False
     
-    def reset_game(self):
-        self.board = [[None for _ in range(self.n)] for _ in range(self.m)]
-        self.current_player = 1
+    def get_last_move(self):
+        return self.last_move
+
+    def copy(self):
+        new_game = MNKGame(self.m, self.n, self.k)
+        new_game.board = self.board.copy()
+        new_game.current_player = self.current_player
+        new_game.last_move = self.last_move
+        new_game.winner = self.winner
+        return new_game
 
     def save_state(self, filename):
-        import json
         state = {
-            "board": self.board,
+            "board": self.board.tolist(),
             "current_player": self.current_player,
             "m": self.m,
             "n": self.n,
-            "k": self.k
+            "k": self.k,
+            "winner": self.winner,
+            "last_move": self.last_move
         }
         with open(filename, "w") as f:
             json.dump(state, f)
         print(f"Game state saved to {filename}.")
 
     def load_state(self, filename):
-        import json
         with open(filename, "r") as f:
             state = json.load(f)
-        self.board = state["board"]
+        self.board = np.array(state["board"])
         self.current_player = state["current_player"]
         self.m = state["m"]
         self.n = state["n"]
         self.k = state["k"]
+        self.winner = state["winner"]
+        self.last_move = tuple(state["last_move"])
         print(f"Game state loaded from {filename}.")
 
-    def display_board(self):
-        for row in self.board:
-            print(" ".join([str(cell) if cell is not None else "." for cell in row]))
-        print()
+    def reset_game(self):
+        self.board = np.full((self.m, self.n), ' ')
+        self.current_player = 'X'
+        self.winner = None
+        self.last_move = None

@@ -4,8 +4,8 @@ from math import sqrt, log
 from models.mcts import MCTS
 from mnk import MNKGame
 
-def test(m, n, k):
-    game = MNKGame(m, n, k)
+def run_simulation():
+    game = MNKGame(7, 7, 4)
     mcts = MCTS(game)
 
     print("=== Simulation Start ===")
@@ -33,14 +33,4 @@ def test(m, n, k):
         print("Result: Draw")
 
 if __name__ == "__main__":
-    tc = 1
-    test_cases = [
-        (3, 3, 3),  
-        (4, 4, 3),  
-        (5, 5, 4), 
-        (7, 7, 4)  
-    ]
-    for m, n, k in test_cases:
-        print("Test Case {} [m: {}, n: {}, k: {}]".format(tc, m, n, k))
-        test(m, n, k)
-        tc = tc + 1
+    run_simulation()
