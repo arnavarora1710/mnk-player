@@ -9,14 +9,14 @@ class Node:
         self.children = []
         self.visits = 0
         self.wins = 0
+    
+    def print_state(self):
+        self.state.display_board()
 
     def is_fully_expanded(self):
         return len(self.children) == len(self.state.get_legal_moves())
 
     def best_child(self, exploration_weight=1.41, grave_adjustment=False, tuned=False):
-        if self.visits == 0:
-            return random.choice(self.children)
-        
         choices_weights = []
         for child in self.children:
             exploitation = child.wins / (child.visits + 1e-10)
@@ -58,9 +58,10 @@ class ScoreBounds(Enum):
     FALSE = "false"
 
 class MCTS:
-    def __init__(self, game, strategy="MCTS-UCB1GRAVE-0.1-NST-true"):
+    def __init__(self, game, strategy="MCTS-UCB1GRAVE-0.1-Random200-true"):
         self.game = game
         self.strategy = strategy
+        self.root = None
 
     def decode_strategy(self):
         strategy = self.strategy.split("-")
@@ -110,22 +111,26 @@ class MCTS:
         while not state.is_terminal() and steps > 0:
             steps -= 1
             legal_moves = state.get_legal_moves()
-            move = random.choice(legal_moves)
+            center = (state.m // 2, state.n // 2)
+            legal_moves.sort(key=lambda move: (move[0] - center[0]) ** 2 + (move[1] - center[1]) ** 2)
+            move = legal_moves[0] if random.random() < 0.5 else random.choice(legal_moves)
             state = state.make_move(move)
 
         return state.get_reward()
 
     def search(self, state, iterations=1000):
-        root = Node(state)
+        self.root = Node(state)
 
         for _ in range(iterations):
-            node = self._select(root)
+            node = self._select(self.root)
             if node is None:
                 continue
             reward = self._simulate(node.state)
             self._backpropagate(node, reward)
 
-        return root.best_child(0).state.get_last_move()
+        # Select the child with the highest number of visits
+        best_child = max(self.root.children, key=lambda child: child.visits)
+        return best_child.state.get_last_move()
 
     def _expand(self, node):
         legal_moves = node.state.get_legal_moves()
