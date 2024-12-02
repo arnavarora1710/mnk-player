@@ -34,7 +34,6 @@ class Node:
         return self.children[np.argmax(choices_weights)]
 
     def compute_grave_adjustment(self, child):
-        # Example: Adjust using GRAVE heuristic (replace with domain-specific logic if needed)
         return 0.1 * child.wins / (child.visits + 1e-10)
 
 class SelectionStrategy(Enum):
@@ -84,22 +83,21 @@ class MCTS:
 
     def _select(self, node):
         selection, exploration_const, _, _ = self.decode_strategy()
-        while not node.state.is_terminal():
-            if not node.is_fully_expanded():
-                return self._expand(node)
-            else:
-                if selection == SelectionStrategy.UCB1:
-                    node = node.best_child(exploration_const.value)
-                elif selection == SelectionStrategy.UCB1GRAVE:
-                    node = node.best_child(exploration_const.value, grave_adjustment=True)
-                elif selection == SelectionStrategy.ProgressiveHistory:
-                    node = node.best_child(exploration_const.value)
-                elif selection == SelectionStrategy.UCB1Tuned:
-                    node = node.best_child(exploration_const.value, tuned=True)
-                elif selection == SelectionStrategy.ProgressiveWidening:
-                    self._apply_progressive_widening(node)
-                    node = node.best_child(exploration_const.value)
-        return node
+        if not node.is_fully_expanded():
+            self._expand(node)
+        if selection == SelectionStrategy.UCB1:
+            return node.best_child(exploration_const.value)
+        elif selection == SelectionStrategy.UCB1GRAVE:
+            return node.best_child(exploration_const.value, grave_adjustment=True)
+        elif selection == SelectionStrategy.ProgressiveHistory:
+            return node.best_child(exploration_const.value)
+        elif selection == SelectionStrategy.UCB1Tuned:
+            return node.best_child(exploration_const.value, tuned=True)
+        elif selection == SelectionStrategy.ProgressiveWidening:
+            self._apply_progressive_widening(node)
+            return node.best_child(exploration_const.value)
+        else:
+            return random.choice(node.children)
 
     def _apply_progressive_widening(self, node):
         if node.visits > len(node.children):
@@ -124,12 +122,9 @@ class MCTS:
 
         for _ in range(iterations):
             node = self._select(self.root)
-            if node is None:
-                continue
             reward = self._simulate(node.state)
             self._backpropagate(node, reward)
-
-        # Select the child with the highest number of visits
+        # Select the child with the highest number of wins
         best_child = max(self.root.children, key=lambda child: child.wins)
         return best_child.state.get_last_move()
 
@@ -140,4 +135,3 @@ class MCTS:
             if not any(child.state == new_state for child in node.children):
                 child_node = Node(new_state, parent=node)
                 node.children.append(child_node)
-        return random.choice(node.children)

@@ -134,7 +134,7 @@ def get_best_string():
             best_utility = curr_utility
             best_agent_string = agent_string
 
-    predicted_utility = run_inference(input_file_path, best_agent_string, model_path)
+    predicted_utility = run_inference(input_file_path, best_agent_string, model_path) + 1
     best_agent_string_col = "\033[1;31;40m" + best_agent_string + "\033[0m"
     print(best_agent_string_col)
     print(f"Predicted Utility: {predicted_utility}")
