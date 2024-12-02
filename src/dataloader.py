@@ -17,14 +17,12 @@ def load_data(train_path='../data/train', test_path='../data/test'):
     feature_columns = common_columns[:-1]  # Assuming last numeric column is target
     target_column = common_columns[-1]
     
-    # Get features and target
     X_train = train_data[feature_columns].astype(np.float32).values
     y_train = train_data[target_column].astype(np.float32).values
 
     X_test = test_data[feature_columns].astype(np.float32).values
     y_test = test_data[target_column].astype(np.float32).values
 
-    # Print debug information
     print(f"Feature columns being used: {feature_columns}")
     print(f"Target column: {target_column}")
     print(f"Number of features: {len(feature_columns)}")
