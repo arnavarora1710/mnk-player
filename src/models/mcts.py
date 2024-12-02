@@ -59,7 +59,7 @@ class ScoreBounds(Enum):
     FALSE = "false"
 
 class MCTS:
-    def __init__(self, game, strategy="MCTS-UCB1GRAVE-0.1-Random200-true"):
+    def __init__(self, game, strategy="MCTS-UCB1-0.1-Random200-true"):
         self.game = game
         self.strategy = strategy
         self.root = None
@@ -130,7 +130,7 @@ class MCTS:
             self._backpropagate(node, reward)
 
         # Select the child with the highest number of visits
-        best_child = max(self.root.children, key=lambda child: child.visits)
+        best_child = max(self.root.children, key=lambda child: child.wins)
         return best_child.state.get_last_move()
 
     def _expand(self, node):

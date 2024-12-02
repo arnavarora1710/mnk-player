@@ -2,12 +2,13 @@ import numpy as np
 import json
 
 class MNKGame:
-    def __init__(self, m, n, k):
+    def __init__(self, m, n, k, my_player):
         self.m = m  # Number of rows
         self.n = n  # Number of columns
         self.k = k  # Number of consecutive marks needed to win
         self.board = np.full((m, n), ' ')  # Empty board
         self.current_player = 'X'  # Player X starts
+        self.my_player = my_player
         self.winner = None  # To store the winner
         self.last_move = None  # To store the last move
 
@@ -43,11 +44,12 @@ class MNKGame:
 
     def get_reward(self):
         """Return the reward for the current state."""
-        if self.winner == 'X':
+        if self.winner == None:
+            return 0
+        elif self.winner == self.my_player:
             return 1
-        elif self.winner == 'O':
+        else:
             return -1
-        return 0  # Draw or ongoing game
 
     def check_winner(self, row, col):
         """Check if the last move resulted in a win."""
@@ -75,7 +77,7 @@ class MNKGame:
         return self.last_move
 
     def copy(self):
-        new_game = MNKGame(self.m, self.n, self.k)
+        new_game = MNKGame(self.m, self.n, self.k, self.my_player)
         new_game.board = self.board.copy()
         new_game.current_player = self.current_player
         new_game.last_move = self.last_move
