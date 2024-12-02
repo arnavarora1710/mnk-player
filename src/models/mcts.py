@@ -34,7 +34,6 @@ class Node:
         return self.children[np.argmax(choices_weights)]
 
     def compute_grave_adjustment(self, child):
-        # Example: Adjust using GRAVE heuristic (replace with domain-specific logic if needed)
         return 0.1 * child.wins / (child.visits + 1e-10)
 
 class SelectionStrategy(Enum):
