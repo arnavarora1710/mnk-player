@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import random
 from math import sqrt, log
@@ -5,6 +6,8 @@ from models.mcts import MCTS
 from mnk import MNKGame
 
 def test(m, n, k):
+    total_time = 0
+    mcts_moves_played = 0
     game = MNKGame(m, n, k)
     mcts = MCTS(game)
 
@@ -15,7 +18,12 @@ def test(m, n, k):
 
     while not game.is_terminal():
         if game.current_player == 'X':
+            # calculate total time taken for MCTS to make a move
+            start_time = time.time()
             move = mcts.search(game, iterations=500)  
+            end_time = time.time()
+            total_time += end_time - start_time
+            mcts_moves_played += 1
             print("MCTS Agent (X) chooses:", move)
         else:
             move = random.choice(game.get_legal_moves())  
@@ -31,14 +39,18 @@ def test(m, n, k):
         print(f"Winner: {game.winner} ({'MCTS Agent' if game.winner == 'X' else 'Random Agent'})")
     else:
         print("Result: Draw")
+    print("Total time taken for MCTS to make a move:", total_time)
+    print("Average time taken for MCTS to make a move:", total_time / mcts_moves_played)
+    print("=== Simulation End ===")
 
 if __name__ == "__main__":
     tc = 1
     test_cases = [
-        (3, 3, 3),  
-        (4, 4, 3),  
-        (5, 5, 4), 
-        (7, 7, 4)  
+        # (3, 3, 3),  
+        # (4, 4, 3),  
+        # (5, 5, 4), 
+        # (7, 7, 4),
+        (15, 15, 5)
     ]
     for m, n, k in test_cases:
         print("Test Case {} [m: {}, n: {}, k: {}]".format(tc, m, n, k))
