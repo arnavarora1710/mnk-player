@@ -5,12 +5,17 @@ from math import sqrt, log
 from models.mcts import MCTS
 from mnk import MNKGame
 from inference import get_best_string
+from pipeline import generate_ludii_mnk_game
 
 def test(m, n, k):
     total_time = 0
     mcts_moves_played = 0
     game = MNKGame(m, n, k, 'X')
+    generate_ludii_mnk_game(m, n, k)
+    # if m == 4:
     optimal_strat = get_best_string()
+    # else:
+    #     optimal_strat = "MCTS-UCB1-1.41421356237-Random200-true"
     mcts = MCTS(game, optimal_strat)
 
     print("=== Simulation Start ===")

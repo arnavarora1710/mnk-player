@@ -112,7 +112,11 @@ class MCTS:
             legal_moves = state.get_legal_moves()
             center = (state.m // 2, state.n // 2)
             legal_moves.sort(key=lambda move: (move[0] - center[0]) ** 2 + (move[1] - center[1]) ** 2)
-            move = legal_moves[0] if random.random() < 0.5 else random.choice(legal_moves)
+            # give more weight to earlier moves in random choice (make up probabilities that are higher towards the start) (towards center)
+            probabilities = [1 / (i + 1) for i in range(len(legal_moves))]
+            probabilities = [p / sum(probabilities) for p in probabilities]
+            move = random.choices(legal_moves, weights=probabilities)[0]
+            # move = random.choice(legal_moves)
             state = state.make_move(move)
 
         return state.get_reward()
