@@ -4,12 +4,14 @@ import random
 from math import sqrt, log
 from models.mcts import MCTS
 from mnk import MNKGame
+from inference import get_best_string
 
 def test(m, n, k):
     total_time = 0
     mcts_moves_played = 0
     game = MNKGame(m, n, k, 'X')
-    mcts = MCTS(game)
+    optimal_strat = get_best_string()
+    mcts = MCTS(game, optimal_strat)
 
     print("=== Simulation Start ===")
     print("Player X: MCTS Agent")
@@ -23,6 +25,7 @@ def test(m, n, k):
             move = mcts.search(game, iterations=1000)  
             end_time = time.time()
             total_time += end_time - start_time
+            print("Time taken for MCTS to make a move:", end_time - start_time)
             mcts_moves_played += 1
             print("MCTS Agent (X) chooses:", move)
         else:
@@ -47,10 +50,11 @@ if __name__ == "__main__":
     tc = 1
     test_cases = [
         # (3, 3, 3),  
-        # (4, 4, 3),  
-        (5, 5, 4), 
+        (4, 4, 3),  
+        # (5, 5, 4), 
         # (7, 7, 4),
-        # (15, 15, 5)
+        # (15, 15, 5),
+        # (20, 20, 5)
     ]
     for m, n, k in test_cases:
         print("Test Case {} [m: {}, n: {}, k: {}]".format(tc, m, n, k))

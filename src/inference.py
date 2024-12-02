@@ -106,7 +106,6 @@ def run_inference(input_file, agent_string, model_path):
 
     # Load the pre-trained model
     loaded_model = joblib.load(model_path)
-    print("Model loaded successfully.")
 
     # Ensure columns align with training data
     required_columns = [
@@ -122,15 +121,10 @@ def run_inference(input_file, agent_string, model_path):
     prediction = loaded_model.predict(inference_data)
     return prediction[0]
 
-
-# Example usage
-
 agent_strings = ['MCTS-UCB1-0.1-Random200-true', 'MCTS-UCB1-0.1-Random200-false', 'MCTS-UCB1-0.1-MAST-true', 'MCTS-UCB1-0.1-MAST-false', 'MCTS-UCB1-0.1-NST-true', 'MCTS-UCB1-0.1-NST-false', 'MCTS-UCB1-0.6-Random200-true', 'MCTS-UCB1-0.6-Random200-false', 'MCTS-UCB1-0.6-MAST-true', 'MCTS-UCB1-0.6-MAST-false', 'MCTS-UCB1-0.6-NST-true', 'MCTS-UCB1-0.6-NST-false', 'MCTS-UCB1-1.41421356237-Random200-true', 'MCTS-UCB1-1.41421356237-Random200-false', 'MCTS-UCB1-1.41421356237-MAST-true', 'MCTS-UCB1-1.41421356237-MAST-false', 'MCTS-UCB1-1.41421356237-NST-true', 'MCTS-UCB1-1.41421356237-NST-false', 'MCTS-UCB1GRAVE-0.1-Random200-true', 'MCTS-UCB1GRAVE-0.1-Random200-false', 'MCTS-UCB1GRAVE-0.1-MAST-true', 'MCTS-UCB1GRAVE-0.1-MAST-false', 'MCTS-UCB1GRAVE-0.1-NST-true', 'MCTS-UCB1GRAVE-0.1-NST-false', 'MCTS-UCB1GRAVE-0.6-Random200-true', 'MCTS-UCB1GRAVE-0.6-Random200-false', 'MCTS-UCB1GRAVE-0.6-MAST-true', 'MCTS-UCB1GRAVE-0.6-MAST-false', 'MCTS-UCB1GRAVE-0.6-NST-true', 'MCTS-UCB1GRAVE-0.6-NST-false', 'MCTS-UCB1GRAVE-1.41421356237-Random200-true', 'MCTS-UCB1GRAVE-1.41421356237-Random200-false', 'MCTS-UCB1GRAVE-1.41421356237-MAST-true', 'MCTS-UCB1GRAVE-1.41421356237-MAST-false', 'MCTS-UCB1GRAVE-1.41421356237-NST-true', 'MCTS-UCB1GRAVE-1.41421356237-NST-false', 'MCTS-ProgressiveHistory-0.1-Random200-true', 'MCTS-ProgressiveHistory-0.1-Random200-false', 'MCTS-ProgressiveHistory-0.1-MAST-true', 'MCTS-ProgressiveHistory-0.1-MAST-false', 'MCTS-ProgressiveHistory-0.1-NST-true', 'MCTS-ProgressiveHistory-0.1-NST-false', 'MCTS-ProgressiveHistory-0.6-Random200-true', 'MCTS-ProgressiveHistory-0.6-Random200-false', 'MCTS-ProgressiveHistory-0.6-MAST-true', 'MCTS-ProgressiveHistory-0.6-MAST-false', 'MCTS-ProgressiveHistory-0.6-NST-true', 'MCTS-ProgressiveHistory-0.6-NST-false', 'MCTS-ProgressiveHistory-1.41421356237-Random200-true', 'MCTS-ProgressiveHistory-1.41421356237-Random200-false', 'MCTS-ProgressiveHistory-1.41421356237-MAST-true', 'MCTS-ProgressiveHistory-1.41421356237-MAST-false', 'MCTS-ProgressiveHistory-1.41421356237-NST-true', 'MCTS-ProgressiveHistory-1.41421356237-NST-false', 'MCTS-UCB1Tuned-0.1-Random200-true', 'MCTS-UCB1Tuned-0.1-Random200-false', 'MCTS-UCB1Tuned-0.1-MAST-true', 'MCTS-UCB1Tuned-0.1-MAST-false', 'MCTS-UCB1Tuned-0.1-NST-true', 'MCTS-UCB1Tuned-0.1-NST-false', 'MCTS-UCB1Tuned-0.6-Random200-true', 'MCTS-UCB1Tuned-0.6-Random200-false', 'MCTS-UCB1Tuned-0.6-MAST-true', 'MCTS-UCB1Tuned-0.6-MAST-false', 'MCTS-UCB1Tuned-0.6-NST-true', 'MCTS-UCB1Tuned-0.6-NST-false', 'MCTS-UCB1Tuned-1.41421356237-Random200-true', 'MCTS-UCB1Tuned-1.41421356237-Random200-false', 'MCTS-UCB1Tuned-1.41421356237-MAST-true', 'MCTS-UCB1Tuned-1.41421356237-MAST-false', 'MCTS-UCB1Tuned-1.41421356237-NST-true', 'MCTS-UCB1Tuned-1.41421356237-NST-false', 'MCTS-ProgressiveWidening-0.1-Random200-true', 'MCTS-ProgressiveWidening-0.1-Random200-false', 'MCTS-ProgressiveWidening-0.1-MAST-true', 'MCTS-ProgressiveWidening-0.1-MAST-false', 'MCTS-ProgressiveWidening-0.1-NST-true', 'MCTS-ProgressiveWidening-0.1-NST-false', 'MCTS-ProgressiveWidening-0.6-Random200-true', 'MCTS-ProgressiveWidening-0.6-Random200-false', 'MCTS-ProgressiveWidening-0.6-MAST-true', 'MCTS-ProgressiveWidening-0.6-MAST-false', 'MCTS-ProgressiveWidening-0.6-NST-true', 'MCTS-ProgressiveWidening-0.6-NST-false', 'MCTS-ProgressiveWidening-1.41421356237-Random200-true', 'MCTS-ProgressiveWidening-1.41421356237-Random200-false', 'MCTS-ProgressiveWidening-1.41421356237-MAST-true', 'MCTS-ProgressiveWidening-1.41421356237-MAST-false', 'MCTS-ProgressiveWidening-1.41421356237-NST-true', 'MCTS-ProgressiveWidening-1.41421356237-NST-false']
-if __name__ == "__main__":
-    input_file_path = "./input/input.txt"  # Path to the input.txt file
-    agent_string = "MCTS-ProgressiveHistory-0.1-MAST-true"  # Example agent string
-    model_path = "./models/lightgbm_model.pkl"  # Path to the saved model
-
+def get_best_string():
+    input_file_path = "./input/input.txt"
+    model_path = "./models/lightgbm_model.pkl"
     best_agent_string = ""
     best_utility = -float('inf')
     for agent_string in agent_strings:
@@ -140,6 +134,28 @@ if __name__ == "__main__":
             best_utility = curr_utility
             best_agent_string = agent_string
 
-    print(best_agent_string)
     predicted_utility = run_inference(input_file_path, best_agent_string, model_path)
+    best_agent_string_col = "\033[1;31;40m" + best_agent_string + "\033[0m"
+    print(best_agent_string_col)
     print(f"Predicted Utility: {predicted_utility}")
+    return best_agent_string
+
+# Example usage
+
+# if __name__ == "__main__":
+#     input_file_path = "./input/input.txt"  # Path to the input.txt file
+#     agent_string = "MCTS-ProgressiveHistory-0.1-MAST-true"  # Example agent string
+#     model_path = "./models/lightgbm_model.pkl"  # Path to the saved model
+
+#     best_agent_string = ""
+#     best_utility = -float('inf')
+#     for agent_string in agent_strings:
+#         # Run inference
+#         curr_utility = run_inference(input_file_path, best_agent_string, model_path)
+#         if curr_utility > best_utility:
+#             best_utility = curr_utility
+#             best_agent_string = agent_string
+
+#     print(best_agent_string)
+#     predicted_utility = run_inference(input_file_path, best_agent_string, model_path)
+#     print(f"Predicted Utility: {predicted_utility}")
