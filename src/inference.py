@@ -139,23 +139,3 @@ def get_best_string():
     print(best_agent_string_col)
     print(f"Predicted Utility: {predicted_utility}")
     return best_agent_string
-
-# Example usage
-
-# if __name__ == "__main__":
-#     input_file_path = "./input/input.txt"  # Path to the input.txt file
-#     agent_string = "MCTS-ProgressiveHistory-0.1-MAST-true"  # Example agent string
-#     model_path = "./models/lightgbm_model.pkl"  # Path to the saved model
-
-#     best_agent_string = ""
-#     best_utility = -float('inf')
-#     for agent_string in agent_strings:
-#         # Run inference
-#         curr_utility = run_inference(input_file_path, best_agent_string, model_path)
-#         if curr_utility > best_utility:
-#             best_utility = curr_utility
-#             best_agent_string = agent_string
-
-#     print(best_agent_string)
-#     predicted_utility = run_inference(input_file_path, best_agent_string, model_path)
-#     print(f"Predicted Utility: {predicted_utility}")
