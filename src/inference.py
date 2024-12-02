@@ -1,13 +1,42 @@
 import pandas as pd
 import re
 import joblib
+import enum as Enum
 
-# Function to read Ludii data from input.txt
+class SelectionStrategy(Enum):
+    UCB1 = "UCB1"
+    UCB1GRAVE = "UCB1GRAVE"
+    ProgressiveHistory = "ProgressiveHistory"
+    UCB1Tuned = "UCB1Tuned"
+    ProgressiveWidening = "ProgressiveWidening"
+
+class ExplorationConst(Enum):
+    CONST_0_1 = 0.1
+    CONST_0_6 = 0.6
+    CONST_1_41 = 1.41421356237
+
+class PlayoutStrategy(Enum):
+    Random200 = "Random200"
+    MAST = "MAST"
+    NST = "NST"
+
+class ScoreBounds(Enum):
+    TRUE = "true"
+    FALSE = "false"
+
+def generate_all_strings():
+    all_strings = []
+    for selection in SelectionStrategy:
+        for exploration in ExplorationConst:
+            for playout in PlayoutStrategy:
+                for score in ScoreBounds:
+                    all_strings.append(f"MCTS-{selection.value}-{exploration.value}-{playout.value}-{score.value}")
+    return all_strings
+
 def read_ludii_data(file_path):
     with open(file_path, 'r') as file:
         return file.read()
 
-# Parsing Ludii rules
 def parse_ludrules(ludrules):
     parsed_data = {}
     patterns = {
@@ -21,7 +50,6 @@ def parse_ludrules(ludrules):
         parsed_data[key] = match.group(1).strip() if match else None
     return parsed_data
 
-# Extract features from parsed Ludii rules
 def extract_features(parsed_data):
     features = {}
     features['game_name'] = parsed_data['game']
@@ -34,30 +62,24 @@ def extract_features(parsed_data):
     features['rule_complexity'] = len(re.findall(r'[<>=%]', parsed_data['rules'])) if parsed_data['rules'] else 0
     return features
 
-# Load Ludii data from input.txt
-input_file_path = "./input/input.txt"  # Path to the input.txt file
+input_file_path = "./input/input.txt"
 ludii_data = read_ludii_data(input_file_path)
 
-# Parse and extract features
 parsed_data = parse_ludrules(ludii_data)
 features = extract_features(parsed_data)
 
-# Convert features to DataFrame for model compatibility
 inference_data = pd.DataFrame([features])
 
-# Load the trained model
-model_path = "./models/gradient_boosting_model.pkl"  # Replace with your model's path
+model_path = "./models/gradient_boosting_model.pkl"
 loaded_model = joblib.load(model_path)
 
-# Ensure the columns align with training data preprocessing
 required_columns = [
     'game_name', 'num_players', 'num_pieces', 'board_type', 
     'num_conditions', 'num_moves', 'num_triggers', 'rule_complexity'
 ]
 for col in required_columns:
     if col not in inference_data.columns:
-        inference_data[col] = 0  # Add missing columns with default values
+        inference_data[col] = 0
 
-# Run inference
 predictions = loaded_model.predict(inference_data)
 print(f"Predicted Utility: {predictions[0]}")
