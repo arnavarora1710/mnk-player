@@ -39,7 +39,7 @@ def test(m, n, k):
         print(f"Winner: {game.winner} ({'MCTS Agent' if game.winner == 'X' else 'Random Agent'})")
     else:
         print("Result: Draw")
-    print("Total time taken for MCTS to make a move:", total_time)
+    print("Total time taken for MCTS to make all moves:", total_time)
     print("Average time taken for MCTS to make a move:", total_time / mcts_moves_played)
     print("=== Simulation End ===")
 
