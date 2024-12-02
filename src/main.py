@@ -47,16 +47,7 @@ def test(m, n, k):
     print("=== Simulation End ===")
 
 if __name__ == "__main__":
-    tc = 1
-    test_cases = [
-        # (3, 3, 3),  
-        (4, 4, 3), 
-        # (5, 5, 4), 
-        # (7, 7, 4),
-        # (15, 15, 5),
-        # (20, 20, 5)
-    ]
-    for m, n, k in test_cases:
-        print("Test Case {} [m: {}, n: {}, k: {}]".format(tc, m, n, k))
-        test(m, n, k)
-        tc = tc + 1
+    # take m, n, k as input
+    m, n, k = map(int, input("Enter m, n, k (space separated): ").split())
+    print("Test Case [m: {}, n: {}, k: {}]".format(m, n, k))
+    test(m, n, k)
